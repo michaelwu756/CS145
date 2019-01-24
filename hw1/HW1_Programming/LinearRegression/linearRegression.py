@@ -70,7 +70,7 @@ def getBetaStochasticGradient(train_x, train_y, lr):
         for i in range(n):
             idx = indices[i]
             d = train_x[idx] * (np.dot(train_x[idx], beta) - train_y[idx])
-            beta = beta - d.dot(lr/30)
+            beta = beta - d.dot(lr)
     return beta
 
 # predicted_y and test_y are the predicted and actual y values respectively as numpy arrays

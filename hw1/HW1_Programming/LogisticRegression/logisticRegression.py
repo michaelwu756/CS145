@@ -62,7 +62,7 @@ def getBeta_BatchGradient(train_x, train_y, lr, num_iter, verbose):
     n = train_x.shape[0] #total of data points
     p = train_x.shape[1] #total number of attributes
 
-    regularization = True;
+    regularization = True
     lam = 0.05
     beta = np.random.rand(p)
     #update beta interatively
