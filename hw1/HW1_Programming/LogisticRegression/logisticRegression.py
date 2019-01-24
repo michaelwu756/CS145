@@ -27,7 +27,10 @@ def getDataframe(filePath):
 
 # sigmoid function
 def sigmoid(z):
-    return 1 / (1 + np.exp(-z))
+    if z < 0:
+        return 1 - 1/(1 + np.exp(z))
+    else:
+        return 1/(1 + np.exp(-z))
 
 # compute average logL
 def compute_avglogL(X,y,beta):
@@ -35,7 +38,11 @@ def compute_avglogL(X,y,beta):
     n = y.shape[0]
     avglogL = 0
     for i in range(n):
-        avglogL = avglogL + y[i] * np.dot(X[i], beta) - math.log(1 + math.exp(np.dot(X[i], beta)))
+        dot = np.dot(X[i], beta)
+        try:
+            avglogL = avglogL + y[i] * dot - math.log(1 + math.exp(dot))
+        except OverflowError as err:
+            avglogL = avglogL + y[i] * dot - dot
     avglogL = avglogL/n
     return avglogL
 
@@ -55,13 +62,18 @@ def getBeta_BatchGradient(train_x, train_y, lr, num_iter, verbose):
     n = train_x.shape[0] #total of data points
     p = train_x.shape[1] #total number of attributes
 
+    regularization = False;
+    lam = 0.05
     beta = np.random.rand(p)
     #update beta interatively
     for iter in range(0, num_iter):
         dL = np.zeros(p)
         for i in range(n):
-            pred = 1/(1 + math.exp(-np.dot(train_x[i], beta)))
-            dL = dL + train_x[i] * (train_y[i] - pred)
+            pred = sigmoid(np.dot(train_x[i], beta))
+            if(regularization):
+                dL = dL + train_x[i] * (train_y[i] - pred) / n - 2 * lam * beta
+            else:
+                dL = dL + train_x[i] * (train_y[i] - pred)
         beta = beta + lr * dL
         if(verbose == True and iter % 1000 == 0):
             avgLogL = compute_avglogL(train_x, train_y, beta)
@@ -79,10 +91,15 @@ def getBeta_Newton(train_x, train_y, num_iter, verbose):
         dL = np.zeros(p)
         ddL = np.zeros((p,p))
         for i in range(n):
-            pred = 1/(1 + math.exp(-np.dot(train_x[i], beta)))
+            pred = sigmoid(np.dot(train_x[i], beta))
             dL = dL + train_x[i] * (train_y[i] - pred)
             ddL = ddL - np.matmul(np.matrix(train_x[i]).T, np.matrix(train_x[i])) * pred * (1 - pred)
-        beta = beta - np.matmul(np.linalg.inv(ddL), dL)
+        try:
+            inv = np.linalg.inv(ddL)
+        except np.linalg.LinAlgError as err:
+            inv = np.linalg.inv(ddL - 0.01 * np.identity(p))
+        finally:
+            beta = beta - np.matmul(inv, dL)
         beta = np.array(beta).reshape((-1,))
         if(verbose == True and iter % 1000 == 0):
             avgLogL = compute_avglogL(train_x, train_y, beta)
@@ -98,7 +115,7 @@ class LogisticRegression(object):
     # Forms a linear model (learns the parameter) according to type of beta (0 -  batch gradient, 1 - Newton-Raphson)
     # Performs z-score normalization if isNormalized is 1
     # Print intermidate training loss if verbose = True
-    def __init__(self,lr=0.005, num_iter=10000, verbose = True):
+    def __init__(self,lr=0.000000005, num_iter=10000, verbose = True):
         self.lr = lr
         self.num_iter = num_iter
         self.verbose = verbose
@@ -148,7 +165,7 @@ class LogisticRegression(object):
     # Computes accuracy
     def predict(self, beta):
         newTest_x = addAllOneColumn(self.test_x.values)
-        self.predicted_y = (sigmoid(newTest_x.dot(beta))>=0.5)
+        self.predicted_y = newTest_x.dot(beta)>=0
         n = newTest_x.shape[0]
         output = np.zeros((n,2))
         output[:,0] = self.test_y
@@ -171,6 +188,7 @@ if __name__ == '__main__':
     #do we need normalization?
     if(isNormalized == '1'):
         logisticM.normalize()
+        logisticM.lr = 0.005
 
     #training
     beta = logisticM.train(algType)
