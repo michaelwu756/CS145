@@ -62,7 +62,7 @@ def getBeta_BatchGradient(train_x, train_y, lr, num_iter, verbose):
     n = train_x.shape[0] #total of data points
     p = train_x.shape[1] #total number of attributes
 
-    regularization = False;
+    regularization = True;
     lam = 0.05
     beta = np.random.rand(p)
     #update beta interatively
@@ -71,9 +71,11 @@ def getBeta_BatchGradient(train_x, train_y, lr, num_iter, verbose):
         for i in range(n):
             pred = sigmoid(np.dot(train_x[i], beta))
             if(regularization):
-                dL = dL + train_x[i] * (train_y[i] - pred) / n - 2 * lam * beta
+                dL = dL + train_x[i] * (train_y[i] - pred) / n
             else:
                 dL = dL + train_x[i] * (train_y[i] - pred)
+        if(regularization):
+            dL = dL - 2 * lam * beta
         beta = beta + lr * dL
         if(verbose == True and iter % 1000 == 0):
             avgLogL = compute_avglogL(train_x, train_y, beta)
