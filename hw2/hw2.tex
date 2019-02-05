@@ -41,7 +41,7 @@ Clearly we should first split the data by the vote for budget resolution adoptio
 since it has an information gain of \(1-0.60269=0.39731\) which is higher than any of the other options.
 
 Let's look at the no branch. It starts with an entropy of
-\[-\frac{1}{9}\log_2\left(\frac{1}{9}\right)-\frac{8}{9}\log_2\left(\frac{8}{9}\right)=0.50326\]
+\[-\frac{1}{9}\log_2\left(\frac{1}{9}\right)-\frac{8}{9}\log_2\left(\frac{8}{9}\right)\approx0.50326\]
 and if we split by the vote for handicapped infants the no branch will have 1 democrat and 7 republicans. The yes
 branch will have 1 republican. The yes branch has 0 entropy, so the entropy after the split is the following.
 \[\frac{8}{9}\left(-\frac{1}{8}\log_2\left(\frac{1}{8}\right)-\frac{7}{8}\log_2\left(\frac{7}{8}\right)\right)\approx 0.48317\]
@@ -75,7 +75,7 @@ of the options on the yes side of the first node should be democrat. Then the tr
 Because the left and right sides of the first node all have the same end result, this decision tree could be simplified to the following.
 \begin{figure}[H]
     \begin{center}
-        \includegraphics[width=4.5in]{DecisionTreeSimplified.pdf}
+        \includegraphics[width=2in]{DecisionTreeSimplified.pdf}
     \end{center}
 \end{figure}
 
