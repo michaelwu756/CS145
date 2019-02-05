@@ -11,7 +11,7 @@ def getDataframe(filePath):
     y = dataframe['y']
     x = dataframe.drop('y', axis=1)
     y = y*2 -1.0
-    
+
     return x, y
 
 def compute_accuracy(predicted_y, y):
@@ -21,15 +21,15 @@ def compute_accuracy(predicted_y, y):
 
 def linear_kernel_point(x1, x2):
     return np.dot(x1, x2)
-    
+
 def polynomial_kernel_point(x, y, p=3):
     return (1 + np.dot(x, y)) ** p
 
 def gaussian_kernel_point(x, y, sigma=5.0):
     return np.exp(-linalg.norm(x-y)**2 / (2 * (sigma ** 2)))
-             
+
 def linear_kernel(X):
-    ########## Please Fill Missing Lines Here ##########
+    return np.dot(X, X.T) + 0.000001 * np.identity(len(X))
 
 def polynomial_kernel(X, p=3):
     return (1 + np.dot(X, X.T)) ** p
@@ -63,7 +63,7 @@ class SVM(object):
 
         # Kernel matrix
         K = self.kernel(X)
-        
+
         # dealing with dual form quadratic optimization
         P = cvxopt.matrix(np.outer(y,y) * K)
         q = cvxopt.matrix(np.ones(n_samples) * -1)
@@ -114,13 +114,12 @@ class SVM(object):
     # predict labels for test dataset
     def project(self, X):
         if self.w is not None: ## linear case
-            predict_y = 0
-            ########## Please Fill Missing Lines Here ##########
-            return predict_y
+            return np.dot(self.w, X.T) + self.b
         else: ## non-linear case
             y_predict = np.zeros(len(X))
             for i in range(len(X)):
-                ########## Please Fill Missing Lines Here ##########
+                for j in range(len(self.a)):
+                    y_predict[i] += self.a[j] * self.sv_y[j] * self.kernel_point(self.sv[j], X.values[i])
             return y_predict + self.b
 
     def predict(self, X):
@@ -129,16 +128,16 @@ class SVM(object):
 if __name__ == "__main__":
     # Change 1st parameter to 0 for hard margin, 1 for soft margin
     marginType = sys.argv[1]
-    # Change 2nd parameter to 0 for linear_kernel, 1 for polynomial_kernel, and 2 for gaussian_kernel  
+    # Change 2nd parameter to 0 for linear_kernel, 1 for polynomial_kernel, and 2 for gaussian_kernel
     kernelType = sys.argv[2]
     print('Margin: ', marginType)
     print('kernel Type: ', kernelType)
-    
+
     #load data
     train_x, train_y = getDataframe('Data\\train.csv')
     test_x, test_y = getDataframe('Data\\test.csv')
-    
-    #training    
+
+    #training
     C = 500
     if marginType == '0' and kernelType == '0':
         mysvm = SVM()
@@ -155,7 +154,7 @@ if __name__ == "__main__":
     else:
         mysvm = SVM()
         print('error, use default svm')
-        
+
     mysvm.fit(train_x, train_y)
 
     #testing
@@ -166,5 +165,5 @@ if __name__ == "__main__":
     output[:,1] = predict_y
     np.savetxt('output/test' + '_' + str(marginType) + '_' + str(kernelType) + '.txt', output, delimiter = '\t', newline = '\n')
     test_accuracy = compute_accuracy(predict_y, test_y)
-    
+
     print('Test accuracy: ', test_accuracy)

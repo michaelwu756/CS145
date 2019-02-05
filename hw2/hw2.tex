@@ -188,4 +188,35 @@ The following plot show the data and the decision boundary. The red circles are 
     \end{tikzpicture}
 \end{center}
 
+\paragraph{g)}
+
+Running the hard margin SVM I obtained the following results.
+\begin{verbatim}
+41 support vectors out of 1098 points
+Test accuracy:  0.9890510948905109
+\end{verbatim}
+Running the soft margin SVM I obtained the following results.
+\begin{verbatim}
+28 support vectors out of 1098 points
+Test accuracy:  0.9890510948905109
+\end{verbatim}
+They seem to have a different weight vector due to the margin, but they seem to classify
+all the points the same way which leads to the same accuracy. The accuracy is fairly high so
+it is a good model.
+
+Running the polynomial kernel with soft margin gave me the following results.
+\begin{verbatim}
+19 support vectors out of 1098 points
+Test accuracy:  0.927007299270073
+\end{verbatim}
+Running the Gaussian kernael with soft margin gave me the following results.
+\begin{verbatim}
+35 support vectors out of 1098 points
+Test accuracy:  1.0
+\end{verbatim}
+It seems that the polynomial kernel is not a good fit because it performs worse on the
+test data than the linear kernel. The Gaussian kernel appears to perfectly capture this
+distribution of data, since it predicts the test cases perfectly. So I would want to use the
+Gaussian kernel.
+
 \end{document}
