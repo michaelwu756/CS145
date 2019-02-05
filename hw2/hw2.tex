@@ -80,4 +80,49 @@ Because the left and right sides of the first node all have the same end result,
 \end{figure}
 
 \paragraph{b)}
+
+Running the information gain algorithm yields the following decision tree and accuracy.
+\scriptsize
+\begin{verbatim}
+{'legs': {0: {'fins': {0.0: {'toothed': {0.0: 7.0, 1.0: 3.0}},
+                       1.0: {'eggs': {0.0: 1.0, 1.0: 4.0}}}},
+          2: {'hair': {0.0: 2.0, 1.0: 1.0}},
+          4: {'hair': {0.0: {'toothed': {0.0: 7.0, 1.0: 5.0}}, 1.0: 1.0}},
+          6: {'aquatic': {0.0: 6.0, 1.0: 7.0}},
+          8: 7.0}}
+Test accuracy:  0.8571428571428571
+\end{verbatim}
+\normalsize
+Running the gain ration algorithm yields the following decision tree and accuracy.
+\scriptsize
+\begin{verbatim}
+{'feathers': {0: {'backbone': {0.0: {'airborne': {0.0: {'predator': {0.0: 6.0,
+                                                                     1.0: 7.0}},
+                                                  1.0: 6.0}},
+                               1.0: {'milk': {0.0: {'fins': {0.0: {'legs': {0.0: 3.0,
+                                                                            4.0: 5.0}},
+                                                             1.0: 4.0}},
+                                              1.0: 1.0}}}},
+              1: 2.0}}
+Test accuracy:  0.8095238095238095
+\end{verbatim}
+\normalsize
+I would choose the information gain algorithm, as it leads to higher accuracy. The gain
+ratio algorithm unfairly punishes using legs as a selection feature, even though legs
+is a very good characteristic when trying to distinguish between animal types.
+
+\section*{Problem 2}
+
+\paragraph{a)}
+
+\paragraph{b)}
+
+\paragraph{c)}
+
+\paragraph{d)}
+
+\paragraph{e)}
+
+\paragraph{f)}
+
 \end{document}
