@@ -2,6 +2,9 @@
 \usepackage{amsmath}
 \usepackage{graphicx}
 \usepackage{float}
+\usepackage{mathtools}
+\usepackage{tikz}
+\usepackage{pgfplots}
 \begin{document}
 \title{Computer Science 145, Homework 2}
 \date{February 5th, 2019}
@@ -115,14 +118,74 @@ is a very good characteristic when trying to distinguish between animal types.
 
 \paragraph{a)}
 
+The support vectors are points 2, 6, and 18 which are given by the tuples shown below.
+\[(0.91, 0.32, 1)\qquad (0.41, 2.04, 1)\qquad(2.05, 1.54, -1)\]
+
 \paragraph{b)}
+
+The normal vector can be calculated as shown below.
+\[w=0.5084\begin{bmatrix}
+    0.91\\
+    0.32
+\end{bmatrix}+0.4635\begin{bmatrix}
+    0.41\\
+    2.04
+\end{bmatrix}-0.9709\begin{bmatrix}
+    2.05\\
+    1.54
+\end{bmatrix}=\begin{bmatrix}
+    -1.337666\\
+    -0.386958
+\end{bmatrix}\]
 
 \paragraph{c)}
 
+This can be calculated as follows.
+\[b=\frac{\splitfrac{1-0.91*(-1.337666)-0.32*(-0.386958)}{\splitfrac{+1-0.41*(-1.337666)-2.04*(-0.386958)}{-1-2.05*(-1.337666)-1.54*(-0.386958)}}}{3}=2.33902354\]
+
 \paragraph{d)}
+
+\[f(x)=-1.337666x_1-0.386958x_2+2.33902354\]
 
 \paragraph{e)}
 
+The decision function would output a value of
+\[-1.337666-0.386958+2.33902354=0.61439954\]
+which is positive, so the predicted class label would be 1. Note that this point is closer to the decision boundary than any of the support vectors.
+
 \paragraph{f)}
+
+The following plot show the data and the decision boundary. The red circles are positive data points and the blue x's are negative data points.
+\begin{center}
+    \begin{tikzpicture}
+        \begin{axis}[scatter/classes={p={mark=o,draw=red},n={mark=x,draw=blue}}, xlabel={\(x_1\)}, ylabel={\(x_2\)}]
+            \addplot[scatter,only marks, scatter src=explicit symbolic]
+            table[meta=label] {
+                x y label
+                0.52 -1 p
+                0.91 0.32 p
+                -1.48 1.23 p
+                0.01 1.44 p
+                -0.46 -0.37 p
+                0.41 2.04 p
+                0.53 0.77 p
+                -1.21 -1.1 p
+                -0.39 0.96 p
+                -0.96 0.08 p
+                2.46 2.59 n
+                3.05 2.87 n
+                2.2 3.04 n
+                1.89 2.64 n
+                4.51 -0.52 n
+                3.06 1.3 n
+                3.16 -0.56 n
+                2.05 1.54 n
+                2.34 0.72 n
+                2.94 0.13 n
+            };
+            \addplot[thick, draw=black, mark=none, domain={1:2}] {6.04464 - 3.45688*x};
+        \end{axis}
+    \end{tikzpicture}
+\end{center}
 
 \end{document}
