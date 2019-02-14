@@ -40,20 +40,9 @@ class KNN(object):
         num_train = self.X_train.shape[0]
         dists = np.zeros((num_test, num_train))
         for i in np.arange(num_test):
-        
+
             for j in np.arange(num_train):
-            # ================================================================ #
-            # YOUR CODE HERE:
-            #   Compute the distance between the ith test point and the jth       
-            #   training point using norm(), and store the result in dists[i, j].     
-            # ================================================================ #
-
-                pass
-
-            # ================================================================ #
-            # END YOUR CODE HERE
-            # ================================================================ #
-
+                dists[i, j] = norm(X[i]-self.X_train[j])
         return dists
 
     def compute_L2_distances_vectorized(self, X):
@@ -73,26 +62,10 @@ class KNN(object):
         num_train = self.X_train.shape[0]
         dists = np.zeros((num_test, num_train))
 
-        # ================================================================ #
-        # YOUR CODE HERE:
-        #   Compute the L2 distance between the ith test point and the jth       
-        #   training point and store the result in dists[i, j].  You may 
-        #    NOT use a for loop (or list comprehension).  You may only use
-        #     numpy operations.
-        #
-        #     HINT: use broadcasting.  If you have a shape (N,1) array and
-        #   a shape (M,) array, adding them together produces a shape (N, M) 
-        #   array.
-        # ================================================================ #
         M = np.dot(X, (self.X_train).T)
         test_square = np.square(X).sum(axis = 1)
         train_square = np.square(self.X_train).sum(axis = 1)
-        dists = 
-
-        # ================================================================ #
-        # END YOUR CODE HERE
-        # ================================================================ #
-
+        dists = np.sqrt(np.tile(test_square.reshape((num_test,1)), (1, num_train)) - 2 * M + train_square.T)
         return dists
 
 
@@ -107,30 +80,27 @@ class KNN(object):
 
         Returns:
         - y: A numpy array of shape (num_test,) containing predicted labels for the
-          test data, where y[i] is the predicted label for the test point X[i].  
+          test data, where y[i] is the predicted label for the test point X[i].
         """
         num_test = dists.shape[0]
         y_pred = np.zeros(num_test)
         for i in range(num_test):
             # A list of length k storing the labels of the k nearest neighbors to
             # the ith test point.
-            
+
             closest_y = []
-            
-            # ================================================================ #
-            # YOUR CODE HERE:
-            #   Use the distances to calculate and then store the labels of 
-            #   the k-nearest neighbors to the ith test point.  The function
-            #   numpy.argsort may be useful.
-            #   
-            #   After doing this, find the most common label of the k-nearest
-            #   neighbors.  Store the predicted label of the ith training example
-            #   as y_pred[i].  Break ties by choosing the smaller label.
-            # ================================================================ #
-            
-            pass
-            
-            # ================================================================ #
-            # END YOUR CODE HERE
-            # ================================================================ #
+
+            sorted = np.argsort(dists[i])
+            for j in range(k):
+                closest_y.append(self.y_train[sorted[j]])
+            frequency = {}
+
+            for element in closest_y:
+                frequency[element] = frequency.get(element, 0) + 1
+
+            max = 0
+            for key, val in frequency.items():
+                if val > max or (val == max and key < y_pred[i]):
+                    max = val
+                    y_pred[i] = key
         return y_pred
