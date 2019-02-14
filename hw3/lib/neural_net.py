@@ -86,20 +86,22 @@ class TwoLayerNet(object):
         loss = None
 
         # scores is num_examples by num_classes (N, C)
-        def softmax_loss(x, y):
-            # ================================================================ #
-            # YOUR CODE HERE FOR BONUS QUESTION
-            #   Calculate the cross entropy loss after softmax output layer.
-            #   The format are provided in the notebook.
-            #   This function should return loss and dx, same as MSE loss function.
-            # ================================================================ #
-
-            pass
-
-            # ================================================================ #
-            # END YOUR CODE HERE
-            # ================================================================ #
-            return loss, dx
+        def softmax_loss(y_pred, y_target):
+            Rows, Cols = y_pred.shape
+            loss = 0
+            dy_pred = np.zeros((Rows, Cols))
+            for i in range(Rows):
+                p = np.exp(y_pred[i] - np.max(y_pred[i]))
+                p /= np.sum(p)
+                for j in range (Cols):
+                    if y_target[i] == j:
+                        loss -= np.log(p[j])
+                        dy_pred[i][j] = p[j]-1
+                    else:
+                        dy_pred[i][j] = p[j]
+            loss /= Rows
+            dy_pred /= Rows
+            return loss, dy_pred
 
 
         def MSE_loss(y_pred, y_target):
