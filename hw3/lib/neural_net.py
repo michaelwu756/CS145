@@ -12,8 +12,8 @@ class TwoLayerNet(object):
     In other words, the network has the following architecture:
 
     input - fully connected layer - ReLU - fully connected layer - MSE Loss
-    
-    ReLU function: 
+
+    ReLU function:
     (i) x = x if x >= 0  (ii) x = 0 if x < 0
 
     The outputs of the second fully-connected layer are the scores for each class.
@@ -72,30 +72,11 @@ class TwoLayerNet(object):
         # Compute the forward pass
         scores = None
 
-        # ================================================================ #
-        # YOUR CODE HERE:
-        #   Calculate the output scores of the neural network.  The result
-        #   should be (N, C). As stated in the description for this class,
-        #   there should not be a ReLU layer after the second fully-connected
-        #   layer.
-        #   The output of the second fully connected layer is the output scores. 
-        #   Do not use a for loop in your implementation.
-        #   Please use 'h1' as input of hidden layers, and 'a2' as output of 
-        #   hidden layers after ReLU activation function.
-        #   [Input X] --W1,b1--> [h1] -ReLU-> [a2] --W2,b2--> [scores]
-        #   You may simply use np.maximun for implementing ReLU.
-        # ================================================================ #
-        
-        h1 =
+        h1 = np.dot(X, W1.T) + np.tile(b1, (N, 1))
         a2 = np.zeros(h1.shape)
-        a2 = # activation with input of h1
-        h2 =
+        a2 = np.maximum(h1, 0)
+        h2 = np.dot(a2, W2.T) + np.tile(b2, (N, 1))
         scores = h2
-
-        # ================================================================ #
-        # END YOUR CODE HERE
-        # ================================================================ #
-
 
         # If the targets are not given then jump out, we're done
         if y is None:
@@ -109,70 +90,51 @@ class TwoLayerNet(object):
             # ================================================================ #
             # YOUR CODE HERE FOR BONUS QUESTION
             #   Calculate the cross entropy loss after softmax output layer.
-            #   The format are provided in the notebook. 
+            #   The format are provided in the notebook.
             #   This function should return loss and dx, same as MSE loss function.
             # ================================================================ #
-            
+
             pass
-            
+
             # ================================================================ #
             # END YOUR CODE HERE
             # ================================================================ #
             return loss, dx
-        
-        
+
+
         def MSE_loss(y_pred, y_target):
-            # ================================================================ #
-            # YOUR CODE HERE:
-            #   This function should return loss and dx. The loss is MSE loss between
-            #   network ouput and one hot vector of class labels dx is required for 
-            #   backpropogation. 
-            #   dy_pred stands for the first derivative of MSE_loss(y_pred, y_target) over y_pred.
-            # ================================================================ #
-            # Hint: Check the type and shape of x and y.
-            #       e.g. print('DEBUG:x.shap, y.shape', x.shape, y.shape)
-            pass
-            
-            # ================================================================ #
-            # END YOUR CODE HERE
-            # ================================================================ #
+            Rows, Cols = y_pred.shape
+            loss = 0
+            dy_pred = np.zeros((Rows, Cols))
+            for i in range(Rows):
+                for j in range (Cols):
+                    if y_target[i] == j:
+                        loss += (y_pred[i][j]-1)**2
+                        dy_pred[i][j] = 2 * (y_pred[i][j]-1)
+                    else:
+                        loss += y_pred[i][j]**2
+                        dy_pred[i][j] = 2 * y_pred[i][j]
+            loss /= Rows
+            dy_pred /= Rows
             return loss, dy_pred
-        
-        #data_loss, dscore = softmax_loss(scores, y) 
+
+        #data_loss, dscore = softmax_loss(scores, y)
         # The above line is for bonus question. If you have implemented softmax_loss, de-comment this line instead of MSE error.
-        
+
         data_loss, dscore = MSE_loss(scores, y) # "comment" this line if you use softmax_loss
-        # ================================================================ #
-        # YOUR CODE HERE:
-        #   Calculate the regularization loss. Multiply the regularization
-        #   loss by 0.5 (in addition to the factor reg).
-        # ================================================================ #
-        reg_loss = 
-        
-        # ================================================================ #
-        # END YOUR CODE HERE
-        # ================================================================ #
+        reg_loss = reg / 2 * ((W1**2).sum() + (W2**2).sum())
         loss = data_loss + reg_loss
 
         grads = {}
-
-        # ================================================================ #
-        # Backpropogation: (You do not need to change this!)
-        #   Backward pass is implemented. From the dscore error, we calculate 
-        #   the gradient and store as grads['W1'], etc.
-        # ================================================================ #
         grads['W2'] = a2.T.dot(dscore).T + reg * W2
         grads['b2'] = np.ones(N).dot(dscore)
-        
+
         da_h = np.zeros(h1.shape)
         da_h[h1>0] = 1
         dh = (dscore.dot(W2) * da_h)
 
         grads['W1'] = np.dot(dh.T,X) + reg * W1
         grads['b1'] = np.ones(N).dot(dh)
-        # ================================================================ #
-        # END YOUR CODE HERE
-        # ================================================================ #
 
         return loss, grads
 
@@ -209,7 +171,7 @@ class TwoLayerNet(object):
             X_batch = None
             y_batch = None
 
-            #   Create a minibatch (X_batch, y_batch) by sampling batch_size 
+            #   Create a minibatch (X_batch, y_batch) by sampling batch_size
             #   samples randomly.
 
             b_index = np.random.choice(num_train, batch_size)
@@ -220,22 +182,11 @@ class TwoLayerNet(object):
             loss, grads = self.loss(X_batch, y=y_batch, reg=reg)
             loss_history.append(loss)
 
-            # ================================================================ #
-            # YOUR CODE HERE:
-            #   Perform a gradient descent step using the minibatch to update
-            #   all parameters (i.e., W1, W2, b1, and b2).
-            #   The gradient has been calculated as grads['W1'], grads['W2'], 
-            #   grads['b1'], grads['b2']
-            #   For example, 
-            #   W1(new) = W1(old) - learning_rate * grads['W1'] 
-            #   (this is not the exact code you use!)
-            # ================================================================ #
-            
-            
-
-            # ================================================================ #
-            # END YOUR CODE HERE
-            # ================================================================ #
+            _, grads = self.loss(X_batch, y_batch, reg)
+            self.params['W1'] -= learning_rate * grads['W1']
+            self.params['b1'] -= learning_rate * grads['b1']
+            self.params['W2'] -= learning_rate * grads['W2']
+            self.params['b2'] -= learning_rate * grads['b2']
 
             if verbose and it % 100 == 0:
                 print('iteration {} / {}: loss {}'.format(it, num_iters, loss))
@@ -272,18 +223,17 @@ class TwoLayerNet(object):
           the elements of X. For all i, y_pred[i] = c means that X[i] is predicted
           to have class c, where 0 <= c < C.
         """
-        y_pred = None
+        N, _ = X.shape
+        y_pred = np.zeros((N,))
 
-        # ================================================================ #
-        # YOUR CODE HERE:
-        #   Predict the class given the input data.
-        # ================================================================ #
         scores = self.loss(X)
-        pass
-        
-        # ================================================================ #
-        # END YOUR CODE HERE
-        # ================================================================ #
+        _, D = scores.shape
+        for i in range(N):
+            max = 0
+            for j in range(D):
+                if scores[i][j] > max:
+                    max = scores[i][j]
+                    y_pred[i] = j
 
         return y_pred
 
