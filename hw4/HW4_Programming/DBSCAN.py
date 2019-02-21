@@ -104,12 +104,15 @@ class DBSCAN:
                     if not point1.isAssignedToCluster:
                         cluster.add(point1)
                         point1.isAssignedToCluster = True;
+                        if point1 in noise:
+                            noise.remove(point1)
                     j += 1
                 # add cluster to the list of clusters
                 clusters.append(cluster)
 
             else:
-                noise.add(point)
+                if not point.isAssignedToCluster:
+                    noise.add(point)
 
             N = []
 

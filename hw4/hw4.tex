@@ -1,6 +1,22 @@
 \documentclass[12pt]{article}
 \usepackage{slashbox}
 \usepackage{amsmath}
+\usepackage{pgfplots}
+
+\pgfplotsset{
+    discard if not/.style 2 args={
+        filter discard warning=false,
+        x filter/.code={
+            \edef\tempa{\thisrowno{#1}}
+            \edef\tempb{#2}
+            \ifx\tempa\tempb
+            \else
+            \def\pgfmathresult{nan}
+            \fi
+        }
+    }
+}
+
 \begin{document}
 \title{Computer Science 145, Homework 4}
 \date{February 22nd, 2019}
@@ -80,24 +96,182 @@ Overall this is a fairly good clustering since all our metrics have high scores.
 
 \paragraph{a)}
 
+In order to implement this, I simply assigned points to the closest cluster and calculated the new centroids by
+averaging the \(x\) and \(y\) values of the datapoints in the cluster.
+
 \paragraph{b)}
 
+The following graphs show the results of the clustering.
+\begin{center}
+    \begin{tikzpicture}[scale=0.5]
+        \begin{axis}[only marks, title=KMeans on Dataset 1]
+            \pgfplotsforeachungrouped \i in {0,...,2} {
+                \addplot table [x index=0, y index=1, col sep=comma, discard if not={2}{\i}] {HW4_Programming/Kmeans_dataset1.csv};
+            }
+        \end{axis}
+    \end{tikzpicture}
+    \begin{tikzpicture}[scale=0.5]
+        \begin{axis}[only marks, title=KMeans on Dataset 2]
+            \pgfplotsforeachungrouped \i in {0,...,2} {
+                \addplot table [x index=0, y index=1, col sep=comma, discard if not={2}{\i}] {HW4_Programming/Kmeans_dataset2.csv};
+            }
+        \end{axis}
+    \end{tikzpicture}
+    \begin{tikzpicture}[scale=0.5]
+        \begin{axis}[only marks, title=KMeans on Dataset 3]
+            \pgfplotsforeachungrouped \i in {0,...,1} {
+                \addplot table [x index=0, y index=1, col sep=comma, discard if not={2}{\i}] {HW4_Programming/Kmeans_dataset3.csv};
+            }
+        \end{axis}
+    \end{tikzpicture}
+\end{center}
+The following table summarizes the performance of this clustering using purity and normalized mean information.
+\begin{center}
+    \begin{tabular}{c|c|c}
+        Dataset & Purity & NMI\\
+        \hline
+        1 & 1 & 1\\
+        2 & 0.764 & 0.046851365954979234\\
+        3 & 0.76 & 0.14502499937722388\\
+    \end{tabular}
+\end{center}
+
 \paragraph{c)}
+
+K-Means works well because it is very fast and can handle datasets where clusters are clearly separated like dataset 1. Each iteration
+is linear with respect to the number of data points. However, it does not handle overlapping clusters with non-circular distributions
+like in dataset 2 well because it assigns data points to the nearest centroid. It also does not handle data which has irregular
+boundaries like dataset 3 well. Also, tuning the number of clusters could lead to different results.
+Luckily in this test we obtained the number of clusters from the number of labels in the training set.
 
 \section*{Problem 3}
 
 \paragraph{a)}
 
+I implemented this by assigning points to clusters as they are visited. Due to the way the existing code was structured, I also needed
+to ensure that reachable non-core points were not included in the noise set.
+
 \paragraph{b)}
 
+The following graphs show the results of the clustering.
+\begin{center}
+    \begin{tikzpicture}[scale=0.5]
+        \begin{axis}[only marks, title=DBSCAN on Dataset 1]
+            \pgfplotsforeachungrouped \i in {0,...,4} {
+                \addplot table [x index=0, y index=1, col sep=comma, discard if not={2}{\i}] {HW4_Programming/DBSCAN_dataset1.csv};
+            }
+        \end{axis}
+    \end{tikzpicture}
+    \begin{tikzpicture}[scale=0.5]
+        \begin{axis}[only marks, title=DBSCAN on Dataset 2]
+            \pgfplotsforeachungrouped \i in {0,...,2} {
+                \addplot table [x index=0, y index=1, col sep=comma, discard if not={2}{\i}] {HW4_Programming/DBSCAN_dataset2.csv};
+            }
+        \end{axis}
+    \end{tikzpicture}
+    \begin{tikzpicture}[scale=0.5]
+        \begin{axis}[only marks, title=DBSCAN on Dataset 3]
+            \pgfplotsforeachungrouped \i in {0,...,3} {
+                \addplot table [x index=0, y index=1, col sep=comma, discard if not={2}{\i}] {HW4_Programming/DBSCAN_dataset3.csv};
+            }
+        \end{axis}
+    \end{tikzpicture}
+\end{center}
+The following table summarizes the performance of this clustering using purity and normalized mean information.
+\begin{center}
+    \begin{tabular}{c|c|c}
+        Dataset & Purity & NMI\\
+        \hline
+        1 & 0.94 & 0.9590647490609898\\
+        2 & 0.714 & 0.011352036737124684\\
+        3 & 0.985 & 0.8173489274692755\\
+    \end{tabular}
+\end{center}
+
 \paragraph{c)}
+
+DBSCAN works well on irregular connected distributions such as dataset 3. It is also resistant to noise and is faster than GMM. A disadvantage
+of DBSCAN is that the correct search radius and the minimum number of points must be tuned correctly so that extra clusters are not created.
+Dataset 3 shows that an extra cluster is created because the algorithm could not make the jump between two halves of a distribution. There
+are also small extra clusters in datasets 1 and 2 with only four points. DBSCAN also does not handle overlapping distributions well and
+will gather nearby data points into one cluster.
 
 \section*{Problem 4}
 
 \paragraph{a)}
 
+In order to implement the expectation stage I had to divide the new weights \(w_{ij}\) by the sum of the weights for a given data point
+across all the clusters. In order to implement the maximization stage I set the weights for each cluster to the sum of the weights across
+all data points for that cluster. I also implemented the covariance formula and the initial means and covariance matrix in \texttt{DataPoints.py}.
+
 \paragraph{b)}
+
+The following graphs show the results of the clustering.
+\begin{center}
+    \begin{tikzpicture}[scale=0.5]
+        \begin{axis}[only marks, title=GMM on Dataset 1]
+            \pgfplotsforeachungrouped \i in {0,...,2} {
+                \addplot table [x index=0, y index=1, col sep=comma, discard if not={2}{\i}] {HW4_Programming/GMM_dataset1.csv};
+            }
+        \end{axis}
+    \end{tikzpicture}
+    \begin{tikzpicture}[scale=0.5]
+        \begin{axis}[only marks, title=GMM on Dataset 2]
+            \pgfplotsforeachungrouped \i in {0,...,2} {
+                \addplot table [x index=0, y index=1, col sep=comma, discard if not={2}{\i}] {HW4_Programming/GMM_dataset2.csv};
+            }
+        \end{axis}
+    \end{tikzpicture}
+    \begin{tikzpicture}[scale=0.5]
+        \begin{axis}[only marks, title=GMM on Dataset 3]
+            \pgfplotsforeachungrouped \i in {0,...,1} {
+                \addplot table [x index=0, y index=1, col sep=comma, discard if not={2}{\i}] {HW4_Programming/GMM_dataset3.csv};
+            }
+        \end{axis}
+    \end{tikzpicture}
+\end{center}
+The following table summarizes the performance of this clustering using purity and normalized mean information.
+\begin{center}
+    \begin{tabular}{c|c|c}
+        Dataset & Purity & NMI\\
+        \hline
+        1 & 1 & 1\\
+        2 & 0.764 & 0.07776497220479159\\
+        3 & 0.69 & 0.07594783950403936\\
+    \end{tabular}
+\end{center}
 
 \paragraph{c)}
 
+GMM works well because it can classify separated distributions like in dataset 1. It can handle varying shapes of distributions
+as long as they are somewhat elliptical, unlike K-Means which works best on distributions that are circular and have the same spread.
+Although GMM had some difficulty correctly clustering dataset 2, its clusters more closely resembles the ground truth labels than
+either K-Means or DBSCAN. Unfortunately GMM is very slow and does not handle irregular distributions such as dataset 3.
+
+\section*{Ground Truth Labels}
+
+For reference, here is a visualization of the ground truth labels of our datasets.
+\begin{center}
+    \begin{tikzpicture}[scale=0.5]
+        \begin{axis}[only marks, title=Dataset 1 Ground Truth]
+            \pgfplotsforeachungrouped \i in {1,...,3} {
+                \addplot table [x index=0, y index=1, col sep=tab, discard if not={2}{\i}] {HW4_Programming/dataset1.txt};
+            }
+        \end{axis}
+    \end{tikzpicture}
+    \begin{tikzpicture}[scale=0.5]
+        \begin{axis}[only marks, title=Dataset 2 Ground Truth]
+            \pgfplotsforeachungrouped \i in {1,...,3} {
+                \addplot table [x index=0, y index=1, col sep=tab, discard if not={2}{\i}] {HW4_Programming/dataset2.txt};
+            }
+        \end{axis}
+    \end{tikzpicture}
+    \begin{tikzpicture}[scale=0.5]
+        \begin{axis}[only marks, title=Dataset 3 Ground Truth]
+            \pgfplotsforeachungrouped \i in {1,...,2} {
+                \addplot table [x index=0, y index=1, col sep=tab, discard if not={2}{\i}] {HW4_Programming/dataset3.txt};
+            }
+        \end{axis}
+    \end{tikzpicture}
+\end{center}
 \end{document}
