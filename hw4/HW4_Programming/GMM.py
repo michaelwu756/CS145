@@ -37,7 +37,7 @@ class GMM:
         self.w = [0.0 for x in range(self.K)]
         self.GMM("dataset3")
     # -------------------------------------------------------------------
-    def GMM(self, set):
+    def GMM(self, setName):
         clusters = []
         self.mean = [[0.0 for y in range(2)] for x in range(self.K)]
         self.stdDev = [[0.0 for y in range(2)] for x in range(self.K)]
@@ -114,7 +114,7 @@ class GMM:
         print(("NMI :" + str(nmi)))
 
         # write clusters to file for plotting
-        f = open("GMM_" + set + ".csv", 'w')
+        f = open("GMM_" + setName + ".csv", 'w')
         for w in range(self.K):
             print(("Cluster " + str(w) + " size :" + str(len(clusters[w]))))
             for point in clusters[w]:

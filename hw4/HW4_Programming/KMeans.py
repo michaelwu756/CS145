@@ -66,7 +66,7 @@ class KMeans:
         random.Random(seed).shuffle(dataSet)
         self.kmeans(dataSet, "dataset3")
     # -------------------------------------------------------------------
-    def kmeans(self, dataSet, set):
+    def kmeans(self, dataSet, setName):
         clusters = []
         k = 0
         while k < self.K:
@@ -132,7 +132,7 @@ class KMeans:
         print(("NMI :" + str(nmi)))
 
         # write clusters to file for plotting
-        f = open("Kmeans_" + set + ".csv", "w")
+        f = open("Kmeans_" + setName + ".csv", "w")
         for w in range(self.K):
             print(("Cluster " + str(w) + " size :" + str(len(clusters[w]))))
             for point in clusters[w]:

@@ -55,7 +55,7 @@ class DBSCAN:
             distances = []
         return sumOfDist/len(dataSet)
     # -------------------------------------------------------------------
-    def dbscan(self, dataSet, set):
+    def dbscan(self, dataSet, setName):
         clusters = []
         visited = set()
         noise = set()
@@ -131,7 +131,7 @@ class DBSCAN:
         nmi = DataPoints.calcNMI(nmiMatrix)
         print(("NMI :" + str(nmi)))
 
-        DataPoints.writeToFile(noise, clusters, "DBSCAN_" + set + ".csv")
+        DataPoints.writeToFile(noise, clusters, "DBSCAN_" + setName + ".csv")
     # -------------------------------------------------------------------
     def removeDuplicates(self, n, n1):
         for point in n1:
