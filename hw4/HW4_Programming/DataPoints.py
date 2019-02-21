@@ -21,18 +21,41 @@ class DataPoints:
     # -------------------------------------------------------------------
     @staticmethod
     def getMean(clusters, mean):
-        # Initialize the mean for each cluster
-        # ****************Please Fill Missing Lines Here*****************
+        for i in range(len(clusters)):
+            cluster = clusters[i]
+            cx = 0
+            cy = 0
+            size = len(cluster)
+            for point in cluster:
+                cx += point.x
+                cy += point.y
+            mean[i][0] = cx / size
+            mean[i][1] = cy / size
     # -------------------------------------------------------------------
     @staticmethod
     def getStdDeviation(clusters, mean, stddev):
-        # Initialize the std for each cluster
-        # ****************Please Fill Missing Lines Here*****************
+        for i in range(len(clusters)):
+            cluster = clusters[i]
+            cx = 0
+            cy = 0
+            size = len(cluster)
+            for point in cluster:
+                cx += pow((point.x - mean[i][0]), 2)
+                cy += pow((point.y - mean[i][1]), 2)
+            stddev[i][0] = cx / size
+            stddev[i][1] = cy / size
     # -------------------------------------------------------------------
     @staticmethod
     def getCovariance(clusters, mean, stddev, cov):
-        # Initialize the cov for each cluster
-        # ****************Please Fill Missing Lines Here*****************
+        for i in range(len(clusters)):
+            cluster = clusters[i]
+            cov_xy = 0
+            size = len(cluster)
+            for point in cluster:
+                cov_xy += (point.x - mean[i][0]) * (point.y - mean[i][1])
+            cov[i][0][0] = stddev[i][0]
+            cov[i][1][1] = stddev[i][1]
+            cov[i][0][1] = cov[i][1][0] = cov_xy / size
     # -------------------------------------------------------------------
     @staticmethod
     def getNMIMatrix(clusters, noOfLabels):

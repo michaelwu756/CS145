@@ -52,19 +52,19 @@ class KMeans:
         dataSet = self.readDataSet("dataset1.txt")
         self.K = DataPoints.getNoOFLabels(dataSet)
         random.Random(seed).shuffle(dataSet)
-        self.kmeans(dataSet)
+        self.kmeans(dataSet, "dataset1")
 
         print("")
         dataSet = self.readDataSet("dataset2.txt")
         self.K = DataPoints.getNoOFLabels(dataSet)
         random.Random(seed).shuffle(dataSet)
-        self.kmeans(dataSet)
-        
+        self.kmeans(dataSet, "dataset2")
+
         print("")
         dataSet = self.readDataSet("dataset3.txt")
         self.K = DataPoints.getNoOFLabels(dataSet)
         random.Random(seed).shuffle(dataSet)
-        self.kmeans(dataSet)
+        self.kmeans(dataSet, "dataset3")
     # -------------------------------------------------------------------
     def kmeans(self, dataSet):
         clusters = []
@@ -73,7 +73,7 @@ class KMeans:
             cluster = set()
             clusters.append(cluster)
             k += 1
-        
+
         # Initially randomly assign points to clusters
         i = 0
         for point in dataSet:
@@ -89,7 +89,7 @@ class KMeans:
             clusters[j] = set()
 
         self.reassignClusters(dataSet, centroids, clusters)
-        
+
         # continue till converge
         iteration = 0
         while True:
@@ -132,7 +132,7 @@ class KMeans:
         print(("NMI :" + str(nmi)))
 
         # write clusters to file for plotting
-        f = open("Kmeans.csv", "w")
+        f = open("Kmeans_" + set + ".csv", "w")
         for w in range(self.K):
             print(("Cluster " + str(w) + " size :" + str(len(clusters[w]))))
             for point in clusters[w]:
@@ -161,7 +161,7 @@ class KMeans:
 
             minIndex = self.getMin(dist)
             # assign point to the closest cluster
-            # ****************Please Fill Missing Lines Here*****************
+            clusters[minIndex].add(point)
     # -------------------------------------------------------------------
     def getMin(self, dist):
         min = sys.maxsize
@@ -180,10 +180,13 @@ class KMeans:
         # mean of x and mean of y
         cx = 0
         cy = 0
-        
+
         size = len(cluster)
-        # ****************Please Fill Missing Lines Here*****************
-        
+        for point in cluster:
+            cx += point.x
+            cy += point.y
+        cx /= size
+        cy /= size
         return Centroid(cx, cy)
     # -------------------------------------------------------------------
     @staticmethod

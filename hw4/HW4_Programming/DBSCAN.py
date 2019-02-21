@@ -19,7 +19,7 @@ class DBSCAN:
         self.noOfLabels = DataPoints.getNoOFLabels(dataSet)
         self.e = self.getEpsilon(dataSet)
         print(("Esp :" + str(self.e)))
-        self.dbscan(dataSet)
+        self.dbscan(dataSet, "dataset1")
 
         print("\nFor dataset2")
         dataSet = KMeans.readDataSet("dataset2.txt")
@@ -27,7 +27,7 @@ class DBSCAN:
         self.noOfLabels = DataPoints.getNoOFLabels(dataSet)
         self.e = self.getEpsilon(dataSet)
         print(("Esp :" + str(self.e)))
-        self.dbscan(dataSet)
+        self.dbscan(dataSet, "dataset2")
 
         print("\nFor dataset3")
         dataSet = KMeans.readDataSet("dataset3.txt")
@@ -35,7 +35,7 @@ class DBSCAN:
         self.noOfLabels = DataPoints.getNoOFLabels(dataSet)
         self.e = self.getEpsilon(dataSet)
         print(("Esp :" + str(self.e)))
-        self.dbscan(dataSet)
+        self.dbscan(dataSet, "dataset3")
     # -------------------------------------------------------------------
     def getEpsilon(self, dataSet):
         distances = []
@@ -55,7 +55,7 @@ class DBSCAN:
             distances = []
         return sumOfDist/len(dataSet)
     # -------------------------------------------------------------------
-    def dbscan(self, dataSet):
+    def dbscan(self, dataSet, set):
         clusters = []
         visited = set()
         noise = set()
@@ -69,7 +69,7 @@ class DBSCAN:
             N = []
             minPtsNeighbours = 0
 
-            # check which point satisfies minPts condition 
+            # check which point satisfies minPts condition
             for j in range(len(dataSet)):
                 if i==j:
                     continue
@@ -101,11 +101,9 @@ class DBSCAN:
                             self.removeDuplicates(N, N1)
                         else:
                             N1 = []
-                    # Add point1 is not yet member of any other cluster then add it to cluster
-                    # Hint: use self.isAssignedToCluster function to check if a point is assigned to any clusters
-        # ****************Please Fill Missing Lines Here*****************                    
-                    
-                    
+                    if not point1.isAssignedToCluster:
+                        cluster.add(point1)
+                        point1.isAssignedToCluster = True;
                     j += 1
                 # add cluster to the list of clusters
                 clusters.append(cluster)
@@ -133,7 +131,7 @@ class DBSCAN:
         nmi = DataPoints.calcNMI(nmiMatrix)
         print(("NMI :" + str(nmi)))
 
-        DataPoints.writeToFile(noise, clusters, "DBSCAN_dataset3.csv")
+        DataPoints.writeToFile(noise, clusters, "DBSCAN_" + set + ".csv")
     # -------------------------------------------------------------------
     def removeDuplicates(self, n, n1):
         for point in n1:

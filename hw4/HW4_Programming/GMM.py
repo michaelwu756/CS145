@@ -21,23 +21,23 @@ class GMM:
         self.K = DataPoints.getNoOFLabels(self.dataSet)
         self.W = [[0.0 for y in range(self.K)] for x in range(len(self.dataSet))]
         self.w = [0.0 for x in range(self.K)]
-        self.GMM()
+        self.GMM("dataset1")
 
         print("\n\n\nFor dataset2")
         self.dataSet = KMeans.readDataSet("dataset2.txt")
         self.K = DataPoints.getNoOFLabels(self.dataSet)
         self.W = [[0.0 for y in range(self.K)] for x in range(len(self.dataSet))]
         self.w = [0.0 for x in range(self.K)]
-        self.GMM()
+        self.GMM("dataset2")
 
         print("\n\n\nFor dataset3")
         self.dataSet = KMeans.readDataSet("dataset3.txt")
         self.K = DataPoints.getNoOFLabels(self.dataSet)
         self.W = [[0.0 for y in range(self.K)] for x in range(len(self.dataSet))]
         self.w = [0.0 for x in range(self.K)]
-        self.GMM()
+        self.GMM("dataset3")
     # -------------------------------------------------------------------
-    def GMM(self):
+    def GMM(self, set):
         clusters = []
         self.mean = [[0.0 for y in range(2)] for x in range(self.K)]
         self.stdDev = [[0.0 for y in range(2)] for x in range(self.K)]
@@ -114,7 +114,7 @@ class GMM:
         print(("NMI :" + str(nmi)))
 
         # write clusters to file for plotting
-        f = open("GMM.csv", 'w')
+        f = open("GMM_" + set + ".csv", 'w')
         for w in range(self.K):
             print(("Cluster " + str(w) + " size :" + str(len(clusters[w]))))
             for point in clusters[w]:
@@ -129,9 +129,7 @@ class GMM:
                 numerator = self.w[j] * gaussian.pdf([self.dataSet[i].x, self.dataSet[i].y])
                 self.W[i][j] = numerator
                 denominator += numerator
-
-            # normalize W[i][j] into probabilities
-            # ****************Please Fill Missing Lines Here*****************
+            self.W[i] /= denominator
     # -------------------------------------------------------------------
     def Mstep(self, clusters):
         for j in range(self.K):
@@ -145,8 +143,7 @@ class GMM:
                 denominator += self.W[i][j]
                 numerator += self.W[i][j] * pow((self.dataSet[i].x - self.mean[j][0]), 2)
                 numerator1 += self.W[i][j] * pow((self.dataSet[i].y - self.mean[j][1]), 2)
-                # cov_xy +=?
-                # ****************Please Fill Missing Lines Here*****************
+                cov_xy += self.W[i][j] * (self.dataSet[i].x - self.mean[j][0]) * (self.dataSet[i].y - self.mean[j][1])
 
                 updatedMean1 += self.W[i][j] * self.dataSet[i].x
                 updatedMean2 += self.W[i][j] * self.dataSet[i].y
@@ -154,7 +151,7 @@ class GMM:
             self.stdDev[j][0] = numerator / denominator
             self.stdDev[j][1] = numerator1 / denominator
             # update w[j]
-            # ****************Please Fill Missing Lines Here*****************
+            self.w[j] = denominator
             # update mean
             self.mean[j][0] = updatedMean1 / denominator
             self.mean[j][1] = updatedMean2 / denominator
