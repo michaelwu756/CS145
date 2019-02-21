@@ -66,7 +66,7 @@ class KMeans:
         random.Random(seed).shuffle(dataSet)
         self.kmeans(dataSet, "dataset3")
     # -------------------------------------------------------------------
-    def kmeans(self, dataSet):
+    def kmeans(self, dataSet, set):
         clusters = []
         k = 0
         while k < self.K:
