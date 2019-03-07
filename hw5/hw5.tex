@@ -109,9 +109,96 @@ Based on the conditional FP-tree we have the frequent patterns \(\{bad:2, ad:2, 
 
 \paragraph{a)}
 
+The results of my code were as follows.
+\tiny
+\begin{verbatim}
+================================================== toy.txt
+min_support: 0.6 min_conf: 0.8
+Running ...
+
+------------------------ FREQUENT PATTERNS
+Itemset: "xxx", "yyy" , 80.00%
+----> 1 printed
+
+------------------------ RULES:
+Rule: "xxx" ==> "yyy" , 0.800
+Rule: "yyy" ==> "xxx" , 1.000
+----> 2 printed
+
+0.0 sec
+
+
+================================================== user_movies.txt
+min_support: 0.26 min_conf: 0.68
+Running ...
+
+------------------------ FREQUENT PATTERNS
+Itemset: "Forrest Gump (1994)", "Braveheart (1995)" , 27.33%
+Itemset: "Forrest Gump (1994)", "Shawshank Redemption, The (1994)" , 28.35%
+Itemset: "Pulp Fiction (1994)", "Braveheart (1995)" , 28.57%
+Itemset: "Star Wars: Episode IV - A New Hope (1977)", "Star Wars: Episode V - The Empire Strikes Back (1980)" , 28.57%
+Itemset: "Pulp Fiction (1994)", "Forrest Gump (1994)" , 30.10%
+Itemset: "Pulp Fiction (1994)", "Shawshank Redemption, The (1994)" , 31.63%
+----> 6 printed
+
+------------------------ RULES:
+Rule: "Braveheart (1995)" ==> "Forrest Gump (1994)" , 0.686
+Rule: "Forrest Gump (1994)" ==> "Pulp Fiction (1994)" , 0.686
+Rule: "Braveheart (1995)" ==> "Pulp Fiction (1994)" , 0.717
+Rule: "Shawshank Redemption, The (1994)" ==> "Pulp Fiction (1994)" , 0.725
+Rule: "Star Wars: Episode V - The Empire Strikes Back (1980)" ==> "Star Wars: Episode IV - A New Hope (1977)" , 0.897
+----> 5 printed
+
+1.0720000267 sec
+
+
+================================================== movie_tags.txt
+min_support: 0.0028 min_conf: 0.6
+Running ...
+
+------------------------ FREQUENT PATTERNS
+Itemset: "dark comedy", "black comedy" , 0.28%
+Itemset: "funny", "quirky" , 0.28%
+Itemset: "future", "sci-fi" , 0.28%
+Itemset: "fantasy", "adventure" , 0.29%
+Itemset: "comic book", "superhero" , 0.30%
+Itemset: "atmospheric", "based on a book" , 0.31%
+Itemset: "Nudity (Topless)", "nudity (topless)" , 0.33%
+Itemset: "sci-fi", "space" , 0.34%
+Itemset: "dystopia", "sci-fi" , 0.37%
+Itemset: "imdb top 250", "atmospheric" , 0.37%
+Itemset: "aliens", "sci-fi" , 0.38%
+Itemset: "imdb top 250", "classic" , 0.39%
+Itemset: "action", "sci-fi" , 0.39%
+Itemset: "stylized", "atmospheric" , 0.47%
+Itemset: "funny", "comedy" , 0.57%
+Itemset: "based on a book", "adapted from:book" , 0.60%
+----> 16 printed
+
+------------------------ RULES:
+Rule: "future" ==> "sci-fi" , 0.729
+----> 1 printed
+
+32.1870000362 sec
+\end{verbatim}
+\normalsize
+
 \paragraph{b)}
 
+Assume for contradiction that a global frequent pattern is not a frequent pattern
+of any local dataset. Let the minimum support level be \(p\). Then this implies that the pattern
+appears less than \(p\) percent of the time in each local dataset, but appears more than \(p\)
+percent of the time in the whole dataset. If each local dataset has less than \(p\) percent
+occurrences of the pattern, then the pattern should appears less than \(p\) percent of the time in the whole
+dataset. This is a contradiction, and so a global frequent pattern must be a frequent pattern
+in at least one local dataset.
+
 \paragraph{c)}
+
+A local frequent pattern is not guaranteed to be a global frequent pattern because the local dataset
+does not reflect the global dataset. For example if a local dataset had one element \(x\) and the global
+dataset has one element \(x\) and 99 elements \(y\), we would find that the support of \(x\) in the
+local dataset is \(100\%\) while in the global dataset it is only \(1\%\).
 
 \section*{Problem 3}
 
