@@ -117,15 +117,23 @@ min_support: 0.6 min_conf: 0.8
 Running ...
 
 ------------------------ FREQUENT PATTERNS
+Itemset: "xxx", "zzz" , 60.00%
+Itemset: "yyy", "zzz" , 60.00%
+Itemset: "xxx", "yyy", "zzz" , 60.00%
 Itemset: "xxx", "yyy" , 80.00%
-----> 1 printed
+----> 4 printed
 
 ------------------------ RULES:
 Rule: "xxx" ==> "yyy" , 0.800
 Rule: "yyy" ==> "xxx" , 1.000
-----> 2 printed
+Rule: "zzz" ==> "xxx" , 1.000
+Rule: "zzz" ==> "yyy" , 1.000
+Rule: "zzz" ==> "xxx", "yyy" , 1.000
+Rule: "xxx", "zzz" ==> "yyy" , 1.000
+Rule: "yyy", "zzz" ==> "xxx" , 1.000
+----> 7 printed
 
-0.0 sec
+0.00400018692017 sec
 
 
 ================================================== user_movies.txt
@@ -149,7 +157,7 @@ Rule: "Shawshank Redemption, The (1994)" ==> "Pulp Fiction (1994)" , 0.725
 Rule: "Star Wars: Episode V - The Empire Strikes Back (1980)" ==> "Star Wars: Episode IV - A New Hope (1977)" , 0.897
 ----> 5 printed
 
-1.0720000267 sec
+1.05999994278 sec
 
 
 ================================================== movie_tags.txt
@@ -179,7 +187,7 @@ Itemset: "based on a book", "adapted from:book" , 0.60%
 Rule: "future" ==> "sci-fi" , 0.729
 ----> 1 printed
 
-32.1870000362 sec
+33.2839999199 sec
 \end{verbatim}
 \normalsize
 

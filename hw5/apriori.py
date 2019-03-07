@@ -72,7 +72,7 @@ def get_items_with_min_support(item_set, all_transactions, min_support,
                 local_set[item] += 1
 
     for item, count in local_set.items():
-        if count / float(N) > min_support:
+        if count / float(N) >= min_support:
             rtn.add(item)
 
     return rtn, set_count_map
