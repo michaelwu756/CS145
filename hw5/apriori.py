@@ -72,8 +72,8 @@ def get_items_with_min_support(item_set, all_transactions, min_support,
                 local_set[item] += 1
 
     for item, count in local_set.items():
-        #################### TODO
-        #################### TODO
+        if count / float(N) > min_support:
+            rtn.add(item)
 
     return rtn, set_count_map
 
@@ -88,8 +88,8 @@ def run_apriori_loops(l_set, set_count_map, all_transactions,
     """
     freq_map = dict()
     i = 1
-    while #################### TODO:
-        freq_map[i] = #################### TODO
+    while len(l_set) != 0:
+        freq_map[i] = l_set.copy()
         c_set = join_set(l_set, i + 1)
         l_set, set_count_map = get_items_with_min_support(
             c_set, all_transactions, min_support, set_count_map, N)
@@ -116,7 +116,7 @@ def get_frequent_rules(set_count_map, freq_map, min_conf, N):
             for element in _subsets:
                 remain = item.difference(element)
                 if len(remain) > 0:
-                    confidence = #################### TODO
+                    confidence = set_count_map[item] / float(set_count_map[element])
                     if confidence >= min_conf:
                         rtn_rules.append(
                             ((tuple(element), tuple(remain)), confidence))
@@ -125,7 +125,7 @@ def get_frequent_rules(set_count_map, freq_map, min_conf, N):
 
 def get_support(set_count_map, item, N):
     """ Return the support of an item. """
-    return #################### TODO
+    return set_count_map[item] / float(N)
 
 
 def join_set(s, l):
@@ -134,7 +134,12 @@ def join_set(s, l):
     Return a set whose elements are unions of sets in s
         whose length is equal to the parameter l.
     """
-    return #################### TODO
+    ret = set()
+    for item1 in s:
+        for item2 in s:
+            if len(item1.union(item2)) == l:
+                ret.add(item1.union(item2))
+    return ret
 
 
 def subsets(x):
