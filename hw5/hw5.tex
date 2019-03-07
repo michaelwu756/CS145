@@ -1,6 +1,7 @@
 \documentclass[12pt]{article}
 \usepackage{graphicx}
 \usepackage{float}
+\usepackage{amsmath}
 \begin{document}
 \title{Computer Science 145, Homework 5}
 \date{March 6th, 2019}
@@ -116,7 +117,23 @@ Based on the conditional FP-tree we have the frequent patterns \(\{bad:2, ad:2, 
 
 \paragraph{a)}
 
+\begin{align*}
+    &\text{confidence}(\text{Beer}\Rightarrow\text{Nuts})=P(\text{Nuts}|\text{Beer})=\frac{150}{500}=0.3\\
+    &\text{confidence}(\text{Nuts}\Rightarrow\text{Beer})=P(\text{Beer}|\text{Nuts})=\frac{150}{850}=0.1765\\
+    &\text{all confidence}(\text{Beer},\text{Nuts})=0.1765\\
+    &\text{lift}(\text{Beer},\text{Nuts})=\frac{150\times10000}{500\times850}=3.5294\\
+    &\chi^2=\frac{(150-42.5)^2}{42.5}+\frac{(700-807.5)^2}{807.5}\\
+    &\qquad+\frac{(350-457.5)^2}{457.5}+\frac{(8800-8692.5)^2}{8692.5}=312.81
+\end{align*}
+
 \paragraph{b)}
+
+Considering that the overall probability of buying nuts is \(0.085\) and the overall probability of buying beer
+is \(0.05\), I would say that the confidence values indicate that buying beer increases the chance of buying nuts and vice
+versa. The lift and the \(\chi^2\) statistics reveal that these two variables are correlated as well. The lift is
+greater than 1, so these variables are positively correlated. The \(\chi^2\) is very high, which means that these values
+are not independent. If we were to take the \(p\)-value of this using one degree of freedom, we would find that it
+would be very close to zero so we would reject the null hypothesis that these two events are independent.
 
 \section*{Problem 4}
 
@@ -125,5 +142,19 @@ Based on the conditional FP-tree we have the frequent patterns \(\{bad:2, ad:2, 
 This contains six elements. The length of \(s\) is eight. It contains \(2^6-1=63\) non-empty subsequences.
 
 \paragraph{b)}
+
+In order to perform the join step, we must look for items that match when removing the first item from one
+and the last item from another. Removing the first items yields the following sequences.
+\[\{\left<ce\right>,\left<(cd)\right>,\left<ce\right>,\left<(cd)\right>,\left<bd\right>,\left<bc\right>\}\]
+Removing the last items yields the following sequences.
+\[\{\left<(ac)\right>,\left<bc\right>,\left<bc\right>,\left<ac\right>,\left<(ab)\right>,\left<(ab)\right>\}\]
+The only matching sequence is \(\left<bc\right>\), so joining the corresponding sequences yields the following
+sequences.
+\[\{\left<(ab)(cd)\right>,\left<(ab)ce\right>\}\]
+Then in order to prune, we must check that all the subsequences of the joined sequences are in \(L_3\). For
+the first sequence \(\left<b(cd)\right>\), \(\left<a(cd)\right>\), \(\left<(ab)d\right>\), and \(\left<(ab)c\right>\)
+are all in \(L_3\) so it can stay. For the next sequence \(\left<ace\right>\) and \(\left<(ab)e\right>\) are not
+in \(L_3\) so we can remove it. Finally we have the following set of candidate 4-sequences \(C_4\).
+\[C_4=\{\left<(ab)(cd)\right>\}\]
 
 \end{document}
