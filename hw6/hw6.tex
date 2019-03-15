@@ -1,4 +1,7 @@
 \documentclass[12pt]{article}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage[export]{adjustbox}
 \begin{document}
 \title{Computer Science 145, Homework 6}
 \date{March 14th, 2019}
@@ -8,6 +11,22 @@
 \section*{Problem 1}
 
 \paragraph{a)}
+
+The classification accuracy for both implementations as well as the classification matrices are shown below.
+\begin{center}
+    \begin{tabular}{c|cc}
+        & Train Set Accuracy & Test Set Accuracy\\
+        \hline
+        sklearn implementation & 0.9326498143892522 & 0.7738980350504514\\
+        my implementation & 0.941077291685154 & 0.7810792804796802
+    \end{tabular}
+\end{center}
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=2.5in, valign=t]{{naive_bayes/output/nbm_sklearn.png}}
+        \includegraphics[width=2in, valign=t]{{naive_bayes/output/nbm_mine.png}}
+    \end{center}
+\end{figure}
 
 \paragraph{b)}
 
