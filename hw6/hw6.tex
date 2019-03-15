@@ -11,6 +11,15 @@
 
 \paragraph{b)}
 
+Naive Bayes is a generative model. This is because it learns the actual probability distribution of words in
+different document classes. It does not simply learn a decision boundary between the classes. Naive Bayes
+is different from logistic regression because logistic regression can only separate data. Meanwhile, Naive
+Bayes can generate data from the model it learns. A pro of Naive Bayes is that it is simple to understand
+and train. Drawbacks include that it makes a very strong assumption that our document is a bag of words
+that are independent of each other, and that it will not work very well when our data is imbalanced. If
+a class in the training data does not contain a word, our classifier would incorrectly classify any document
+of the class that does contain that word. This is solved with smoothing.
+
 \section*{Problem 2}
 
 \paragraph{a)}
